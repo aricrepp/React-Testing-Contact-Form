@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const ContactForm = () => {
   const [data, setData] = useState();
   const { register, errors, handleSubmit } = useForm({
     mode: "onBlur",
   });
-  const onSubmit = (data) => {
-    setData(data);
+  const onSubmit = e => {
+    
+    axios
+      .post("https://reqres.in/api/users")
+      .then(res => {
+        setData(res.data); // get just the form data from the REST api
+      
+      })
+      .catch(err => console.log(err.response));
   };
 
   return (
@@ -53,11 +61,11 @@ const ContactForm = () => {
           <textarea name="message" ref={register({ required: false })} />
         </div>
         {data && (
-          <pre style={{ textAlign: "left", color: "white" }}>
+          <pre data-testid="newData" style={{ textAlign: "left", color: "white" }}>
             {JSON.stringify(data, null, 2)}
           </pre>
         )}
-        <input type="submit" />
+        <input type="submit" data-testid="submit" />
       </form>
     </div>
   );

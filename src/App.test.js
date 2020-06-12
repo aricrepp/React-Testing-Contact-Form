@@ -23,7 +23,7 @@ test("renders App without crashing", () => {
 test("checking first name", () => {
   const { getByTestId } = render(<ContactForm />);
 
-  const fName = getByTestId(/firstname/i)
+  const fName = getByTestId(/firstname/i);
 
   fireEvent.change(fName, {target: {value: 'Aric'}});
   expect(fName.value).toBe('Aric');
@@ -47,5 +47,26 @@ test("checking email", () => {
 
   fireEvent.change(email, {target: {value: 'fakeemail@gmail.com'}});
   expect(email.value).toBe('fakeemail@gmail.com');
+
+}); 
+
+test("checking submit", async () => {
+  const { getByTestId } = render(<ContactForm />);
+
+  const fName = getByTestId(/firstname/i);
+  const lName = getByTestId(/lastname/i);
+  const email = getByTestId(/email/i);
+  const submit = getByTestId(/submit/i);
+  
+
+  fireEvent.change(fName, {target: {value: 'Aric'}});
+  expect(fName.value).toBe('Aric');
+  fireEvent.change(lName, {target: {value: 'Repp'}});
+  expect(lName.value).toBe('Repp');
+  fireEvent.change(email, {target: {value: 'fakeemail@gmail.com'}});
+  expect(email.value).toBe('fakeemail@gmail.com');
+  fireEvent.click(submit);
+
+  await waitFor(() => getByTestId(/newData/i));
 
 }); 
