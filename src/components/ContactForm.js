@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const ContactForm = () => {
   const [data, setData] = useState();
   const { register, errors, handleSubmit } = useForm({
     mode: "onBlur",
   });
-  const onSubmit = (data) => {
-    setData(data);
+  const onSubmit = e => {
+    
+    axios
+      .post("https://reqres.in/api/users")
+      .then(res => {
+        setData(res.data); // get just the form data from the REST api
+      
+      })
+      .catch(err => console.log(err.response));
   };
 
   return (
@@ -18,7 +26,8 @@ const ContactForm = () => {
           <input
             name="firstName"
             placeholder="Edd"
-            ref={register({ required: true, maxLength: 3 })}
+            data-testid="firstname"
+            ref={register({ required: true, maxLength: 10 })}
           />
           {errors.firstName && (
             <p>Looks like there was an error: {errors.firstName.type}</p>
@@ -30,6 +39,7 @@ const ContactForm = () => {
           <input
             name="lastName"
             placeholder="Burke"
+            data-testid="lastname"
             ref={register({ required: true })}
           />
           {errors.lastName && (
@@ -41,7 +51,7 @@ const ContactForm = () => {
           <label htmlFor="email" placeholder="bluebill1049@hotmail.com">
             Email*
           </label>
-          <input name="email" ref={register({ required: true })} />
+          <input name="email" data-testid="email" ref={register({ required: true })} />
           {errors.email && (
             <p>Looks like there was an error: {errors.email.type}</p>
           )}
@@ -51,11 +61,11 @@ const ContactForm = () => {
           <textarea name="message" ref={register({ required: false })} />
         </div>
         {data && (
-          <pre style={{ textAlign: "left", color: "white" }}>
+          <pre data-testid="newData" style={{ textAlign: "left", color: "white" }}>
             {JSON.stringify(data, null, 2)}
           </pre>
         )}
-        <input type="submit" />
+        <input type="submit" data-testid="submit" />
       </form>
     </div>
   );
